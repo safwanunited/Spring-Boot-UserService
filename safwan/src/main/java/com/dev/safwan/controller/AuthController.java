@@ -1,5 +1,6 @@
 package com.dev.safwan.controller;
 
+import com.dev.safwan.Exceptions.UserAlreadyExistsException;
 import com.dev.safwan.dtos.*;
 import com.dev.safwan.service.AuthService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +30,7 @@ public class AuthController {
 
 
     @PostMapping("/sign_up")
-    public ResponseEntity<signupResponseDto> signUp(signupRequestdto request){
+    public ResponseEntity<signupResponseDto> signUp(@RequestBody signupRequestdto request) throws UserAlreadyExistsException {
         signupResponseDto response=new signupResponseDto();
 
         if(authService.signUp(request.getEmail(), request.getEmail())){
