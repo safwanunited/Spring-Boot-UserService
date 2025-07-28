@@ -1,10 +1,13 @@
 package com.dev.safwan.service;
 
 import com.dev.safwan.Exceptions.UserAlreadyExistsException;
+import com.dev.safwan.Exceptions.WrongPasswordException;
 import com.dev.safwan.models.User;
 import com.dev.safwan.repositories.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -26,7 +29,18 @@ public class AuthService {
         userRepository.save(user);
         return true;
     }
-    public  String login(String email, String password){
-        return "token";
+    public  String login(String email, String password) throws UserAlreadyExistsException, WrongPasswordException
+    {
+        Optional<User>userOptional=userRepository.findByEmail(email);
+        if(userOptional.isEmpty()){
+            throw new UserAlreadyExistsException("User With" + email +" does Not Exists ");
+        }
+        boolean matches=bCryptPasswordEncoder.matches(password,userOptional.get().getPassword());
+        if(matches){
+            return "token";
+        }
+        else {
+            throw new WrongPasswordException("Wrong Password Exception");
+        }
     }
 }
