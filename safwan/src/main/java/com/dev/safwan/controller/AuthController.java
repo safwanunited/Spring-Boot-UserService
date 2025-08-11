@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,5 +58,10 @@ catch (Exception e){
     ResponseEntity<loginResponseDto>response=new ResponseEntity<>(loginDto,null,HttpStatus.BAD_REQUEST);
     return response;
 }
+    }
+
+    @GetMapping("/validate")
+    public boolean validate(@RequestParam("token") String token){
+        return authService.validate(token);
     }
 }
