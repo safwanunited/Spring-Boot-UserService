@@ -1,0 +1,61 @@
+CREATE TABLE client (
+    id VARCHAR(255) NOT NULL,
+    clientId VARCHAR(255) NOT NULL,
+    clientIdIssuedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    clientSecret VARCHAR(255) DEFAULT NULL,
+    clientSecretExpiresAt TIMESTAMP DEFAULT NULL,
+    clientName VARCHAR(255) NOT NULL,
+    clientAuthenticationMethods TEXT NOT NULL,
+    authorizationGrantTypes TEXT NOT NULL,
+    redirectUris TEXT DEFAULT NULL,
+    postLogoutRedirectUris TEXT DEFAULT NULL,
+    scopes TEXT NOT NULL,
+    clientSettings TEXT NOT NULL,
+    tokenSettings TEXT NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE authorization (
+    id VARCHAR(255) NOT NULL,
+    registeredClientId VARCHAR(255) NOT NULL,
+    principalName VARCHAR(255) NOT NULL,
+    authorizationGrantType VARCHAR(255) NOT NULL,
+    authorizedScopes TEXT DEFAULT NULL,
+    attributes TEXT DEFAULT NULL,
+    state VARCHAR(500) DEFAULT NULL,
+    authorizationCodeValue TEXT DEFAULT NULL,
+    authorizationCodeIssuedAt TIMESTAMP DEFAULT NULL,
+    authorizationCodeExpiresAt TIMESTAMP DEFAULT NULL,
+    authorizationCodeMetadata TEXT DEFAULT NULL,
+    accessTokenValue TEXT DEFAULT NULL,
+    accessTokenIssuedAt TIMESTAMP DEFAULT NULL,
+    accessTokenExpiresAt TIMESTAMP DEFAULT NULL,
+    accessTokenMetadata TEXT DEFAULT NULL,
+    accessTokenType VARCHAR(255) DEFAULT NULL,
+    accessTokenScopes TEXT DEFAULT NULL,
+    refreshTokenValue TEXT DEFAULT NULL,
+    refreshTokenIssuedAt TIMESTAMP DEFAULT NULL,
+    refreshTokenExpiresAt TIMESTAMP DEFAULT NULL,
+    refreshTokenMetadata TEXT DEFAULT NULL,
+    oidcIdTokenValue TEXT DEFAULT NULL,
+    oidcIdTokenIssuedAt TIMESTAMP DEFAULT NULL,
+    oidcIdTokenExpiresAt TIMESTAMP DEFAULT NULL,
+    oidcIdTokenMetadata TEXT DEFAULT NULL,
+    oidcIdTokenClaims TEXT DEFAULT NULL,
+    userCodeValue TEXT DEFAULT NULL,
+    userCodeIssuedAt TIMESTAMP DEFAULT NULL,
+    userCodeExpiresAt TIMESTAMP DEFAULT NULL,
+    userCodeMetadata TEXT DEFAULT NULL,
+    deviceCodeValue TEXT DEFAULT NULL,
+    deviceCodeIssuedAt TIMESTAMP DEFAULT NULL,
+    deviceCodeExpiresAt TIMESTAMP DEFAULT NULL,
+    deviceCodeMetadata TEXT DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE authorizationConsent (
+    registeredClientId VARCHAR(255) NOT NULL,
+    principalName VARCHAR(255) NOT NULL,
+    authorities TEXT NOT NULL,
+    PRIMARY KEY (registeredClientId, principalName)
+);
