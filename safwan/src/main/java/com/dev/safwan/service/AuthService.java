@@ -61,11 +61,11 @@ public class AuthService {
             session.setSessionStatus(SessionStatus.ACTIVE);
 
             sessionRepository.save(session);
-            return token;
         }
         else {
-            throw new WrongPasswordException("Wrong Password Exception");
+            throw new WrongPasswordException("Wrong password");
         }
+        return createJwtToken(userOptional.get().getId(),new ArrayList<>(),userOptional.get().getEmail());
     }
     private String createJwtToken(Long userId, List<String> roles,String email){
         Map<String,Object>dataInJwt=new HashMap<>();
