@@ -18,24 +18,23 @@ public class logTestController {
     private static final Logger log = LoggerFactory.getLogger(logTestController.class);
 
     private final RestTemplateBuilder restTemplateBuilder;
-    private final Tracer tracer;
+//    private final Tracer tracer;
 
-    public logTestController(RestTemplateBuilder restTemplateBuilder, Tracer tracer) {
+    public logTestController(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplateBuilder = restTemplateBuilder;
-        this.tracer = tracer;
     }
 
     @GetMapping("/internal")
     public ResponseEntity<String> hello() {
-        var span = tracer.currentSpan();
-        String traceId = span != null ? span.context().traceId() : "none";
-        String spanId = span != null ? span.context().spanId() : "none";
+//        var span = tracer.currentSpan();
+//        String traceId = span != null ? span.context().traceId() : "none";
+//        String spanId = span != null ? span.context().spanId() : "none";
 
-        log.info("Handling /trace/internal - traceId={}, spanId={}", traceId, spanId);
+        log.info("Handling /trace/internal - traceId={}, spanId={}", MDC.get("traceId") , MDC.get("spanId"));
         log.debug("Doing some internal work for /trace/internal");
         log.info("Handling /trace/internal - end");
 
-        return ResponseEntity.ok("Hello — traceId=" + traceId + ", spanId=" + spanId);
+        return ResponseEntity.ok("Hello — traceId=" + MDC.get("traceId")  + MDC.get("spanId"));
     }
 
     @GetMapping("/external")
