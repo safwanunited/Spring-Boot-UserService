@@ -59,9 +59,22 @@ catch (Exception e){
     return response;
 }
     }
-
     @GetMapping("/validate")
-    public boolean validate(@RequestParam("token") String token){
-        return authService.validate(token);
+    public ResponseEntity<Boolean> validate(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestParam(value = "token", required = false) String token) {
+
+        String finalToken = (authHeader != null && !authHeader.isEmpty()) ? authHeader : token;
+
+        if (finalToken == null || finalToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+
+        boolean isValid = authService.validate(finalToken);
+        return ResponseEntity.ok(isValid);
     }
+
+
+
+
 }
