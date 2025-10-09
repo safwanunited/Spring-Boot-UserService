@@ -2,15 +2,18 @@ package com.dev.safwan.service;
 
 import com.dev.safwan.Exceptions.UserAlreadyExistsException;
 import com.dev.safwan.Exceptions.WrongPasswordException;
+import com.dev.safwan.dtos.SendEmailMessageDTO;
 import com.dev.safwan.models.Session;
 import com.dev.safwan.models.SessionStatus;
 import com.dev.safwan.models.User;
 import com.dev.safwan.repositories.SessionRepository;
 import com.dev.safwan.repositories.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,11 @@ import java.util.*;
 
 @Service
 public class AuthService {
+    @Autowired
+    private KafkaTemplate<String,String> kafkaTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private SecretKey key = Jwts.SIG.HS256.key().build();
@@ -37,7 +45,17 @@ public class AuthService {
         User user=new User();
         user.setEmail(email);
         user.setPassword(bCryptPasswordEncoder.encode(password));
-        userRepository.save(user);
+        User saveduser=userRepository.save(user);
+        SendEmailMessageDTO message=new SendEmailMessageDTO();
+        message.setTo(email);
+        message.setSubject("Welcome to our application");
+        message.setBody("Thank you for signing up to our application");
+        try{
+            kafkaTemplate.send("sendEmail",objectMapper.writeValueAsString(message));
+            }
+        catch (Exception e){}
+
+        System.out.println("This is the Saved User"+saveduser);
         return true;
     }
     public  String login(String email, String password) throws UserAlreadyExistsException, WrongPasswordException
